@@ -42,8 +42,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return 204;
 //});
 
+// For articles
 Route::get('articles', 'ArticlesController@index');
 Route::get('articles/{article}', 'ArticlesController@show');
 Route::post('articles', 'ArticlesController@store');
 Route::put('articles/{article}', 'ArticlesController@update');
 Route::delete('articles/{article}', 'ArticlesController@delete');
+
+// For users
+Route::post('register', 'Auth\RegisterController@register');
