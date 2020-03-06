@@ -3,7 +3,10 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class Handler extends ExceptionHandler
 {
@@ -29,7 +32,7 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param \Exception $exception
      * @return void
      */
     public function report(Exception $exception)
@@ -40,12 +43,22 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param \Illuminate\Http\Request $request
+     * @param \Exception $exception
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
     {
+        // Return 404 response with JSON structure
+        if ($exception instanceof ModelNotFoundException) {
+            return response()->json([
+                'data' => 'Data not found'
+            ], 404);
+        } else if ($exception instanceof NotFoundHttpException) {
+            return response()->json([
+                'data' => 'Resource not found'
+            ], 404);
+        }
         return parent::render($request, $exception);
     }
 }

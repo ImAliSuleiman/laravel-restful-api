@@ -11,9 +11,10 @@ class ArticlesController extends Controller
         return Article::all();
     }
 
-    public function show($id)
+    public function show(Article $article)
     {
-        return Article::find($id);
+        // return Article::find($id);
+        return $article;
     }
 
     public function store(Request $request)
