@@ -44,13 +44,21 @@ Route::middleware('auth:api')
 //});
 
 // For articles
-Route::get('articles', 'ArticlesController@index');
-Route::get('articles/{article}', 'ArticlesController@show');
-Route::post('articles', 'ArticlesController@store');
-Route::put('articles/{article}', 'ArticlesController@update');
-Route::delete('articles/{article}', 'ArticlesController@delete');
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('articles', 'ArticlesController@index');
+    Route::any('articles/{article}', 'ArticlesController@show');
+    Route::post('articles', 'ArticlesController@store');
+    Route::put('articles/{article}', 'ArticlesController@update');
+    Route::delete('articles/{article}', 'ArticlesController@delete');
+});
+
+//Route::get('articles', 'ArticlesController@index');
+//Route::get('articles/{article}', 'ArticlesController@show');
+//Route::post('articles', 'ArticlesController@store');
+//Route::put('articles/{article}', 'ArticlesController@update');
+//Route::delete('articles/{article}', 'ArticlesController@delete');
 
 // For users
 Route::post('register', 'Auth\RegisterController@register');
-Route::post('login', 'Auth\LoginController@login');
+Route::any('login', 'Auth\LoginController@login')->name('login');
 Route::post('logout', 'Auth\LoginController@logout');

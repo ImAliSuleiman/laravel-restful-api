@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -59,6 +60,26 @@ class Handler extends ExceptionHandler
                 'data' => 'Resource not found'
             ], 404);
         }
+
+        if ($exception instanceof AuthenticationException) {
+            $this->unauthenticated($request, $exception);
+        }
+        
+//        if ($exception instanceof AuthenticationException) {
+//            // $this->unauthenticated($request, $exception);
+//            return response()->json([
+//                'message' => 'Unauthenticated'
+//            ], 401);
+//        }
         return parent::render($request, $exception);
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        // return parent::unauthenticated($request, $exception);
+
+        return response()->json([
+            'message' => 'Unauthenticated'
+        ], 401);
     }
 }
