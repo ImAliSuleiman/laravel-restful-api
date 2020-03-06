@@ -13,9 +13,10 @@ use App\Article;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:api')
+    ->get('/user', function (Request $request) {
+        return $request->user();
+    });
 
 //Route::get('articles', function () {
 //    return Article::all();
@@ -51,3 +52,5 @@ Route::delete('articles/{article}', 'ArticlesController@delete');
 
 // For users
 Route::post('register', 'Auth\RegisterController@register');
+Route::post('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout');
