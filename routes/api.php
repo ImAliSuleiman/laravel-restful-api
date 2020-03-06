@@ -43,7 +43,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //});
 
 Route::get('articles', 'ArticlesController@index');
-Route::get('articles/{id}', 'ArticlesController@show');
+Route::get('articles/{article}', 'ArticlesController@show');
 Route::post('articles', 'ArticlesController@store');
-Route::put('articles/{id}', 'ArticlesController@update');
-Route::delete('articles/{id}', 'ArticlesController@delete');
+Route::put('articles/{article}', 'ArticlesController@update');
+Route::delete('articles/{article}', 'ArticlesController@delete');
