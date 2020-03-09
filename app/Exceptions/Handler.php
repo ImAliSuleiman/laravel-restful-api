@@ -64,7 +64,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof AuthenticationException) {
             $this->unauthenticated($request, $exception);
         }
-        
+
 //        if ($exception instanceof AuthenticationException) {
 //            // $this->unauthenticated($request, $exception);
 //            return response()->json([
@@ -77,7 +77,6 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         // return parent::unauthenticated($request, $exception);
-
         return response()->json([
             'message' => 'Unauthenticated'
         ], 401);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -68,5 +69,23 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    public function generateToken()
+    {
+        $binary = openssl_random_pseudo_bytes(24);
+        $hex = bin2hex($binary);
+        $time = time();
+        $timeEncoded = base64_encode($time);
+
+        Log::debug('bin=' . strlen($binary) . ', hex=' . strlen($hex) . ', time=' . strlen($time) . ', timeEncoded=' . strlen($timeEncoded));
+        $token = $hex . $timeEncoded;
+        Log::debug('token (' . strlen($token) . ') = ' . $token);
+
+        return response()->json(array(
+            'token' => $token
+        ), 200);
+        // return $token;
+        // return bin2hex(openssl_random_pseudo_bytes(24)) . base64_encode(time());
     }
 }

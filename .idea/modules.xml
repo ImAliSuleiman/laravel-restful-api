@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Laravel101.iml" filepath="$PROJECT_DIR$/.idea/Laravel101.iml" />
+      <module fileurl="file://$USER_HOME$/PhpstormProjects/tembo-scripts/.idea/tembo-scripts.iml" filepath="$USER_HOME$/PhpstormProjects/tembo-scripts/.idea/tembo-scripts.iml" />
     </modules>
   </component>
 </project>
