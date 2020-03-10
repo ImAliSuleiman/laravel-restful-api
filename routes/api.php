@@ -63,3 +63,22 @@ Route::post('register', 'Auth\RegisterController@register');
 Route::any('login', 'Auth\LoginController@login')->name('login');
 Route::post('logout', 'Auth\LoginController@logout');
 Route::any('genToken', 'Auth\RegisterController@generateToken');
+
+Route::group(array('middleware' => 'auth:api'), function () {
+//    Route::resource(['users' => 'UserController']);
+//    ->names([
+//            'create' => 'users.create',
+//            'store' => 'users.store',
+//            'show' => 'users.show',
+//            'edit' => 'users.edit',
+//            'update' => 'users.update',
+//            'destroy' => 'users.delete',
+//        ]
+//    );
+
+    Route::get('active-users', 'UserController@activeUsers');
+    Route::any('user-info/{id?}', 'UserController@userInfo');
+    Route::any('profile', 'UserController@profile');
+    Route::get('emails', 'UserController@emails');
+    Route::any('sign-out/{id?}', 'UserController@logout');
+});

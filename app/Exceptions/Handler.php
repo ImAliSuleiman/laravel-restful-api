@@ -6,7 +6,9 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class Handler extends ExceptionHandler
@@ -53,13 +55,16 @@ class Handler extends ExceptionHandler
         // Return 404 response with JSON structure
         if ($exception instanceof ModelNotFoundException) {
             return response()->json([
-                'data' => 'Data not found'
+                'message' => 'Data not found'
             ], 404);
         } else if ($exception instanceof NotFoundHttpException) {
             return response()->json([
-                'data' => 'Resource not found'
+                'message' => 'Resource not found'
             ], 404);
-        }
+        } else if ($exception instanceof MethodNotAllowedHttpException)
+            return response()->json([
+                'message' => 'Method not allowed'
+            ]);
 
         if ($exception instanceof AuthenticationException) {
             $this->unauthenticated($request, $exception);
