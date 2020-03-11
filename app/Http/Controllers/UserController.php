@@ -184,4 +184,22 @@ class UserController extends Controller
             ], 200);
     }
 
+    public function posts($uid = null)
+    {
+        if ($uid == null) {
+            if (!request()->has('uid'))
+                return response()->json([
+                    'message' => 'Unspecified user'
+                ]);
+
+            $uid = request()->input('uid');
+        }
+
+        $posts = BD::table('users')
+            ->join('posts', 'users.id', '=', 'posts.user_id')
+            ->select('users.id', 'users.name', 'users.email', 'posts.id as post_id',
+                'posts.body as post_body', 'posts.created_at', 'posts.updated_at')
+            ->get();
+    }
+
 }

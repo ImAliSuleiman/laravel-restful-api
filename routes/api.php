@@ -81,4 +81,5 @@ Route::group(array('middleware' => 'auth:api'), function () {
     Route::any('profile', 'UserController@profile');
     Route::get('emails', 'UserController@emails');
     Route::any('sign-out/{id?}', 'UserController@logout');
+    // Route::any('posts/{uid?}', 'UserController@posts');
 });
