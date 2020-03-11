@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -87,5 +88,15 @@ class RegisterController extends Controller
         ), 200);
         // return $token;
         // return bin2hex(openssl_random_pseudo_bytes(24)) . base64_encode(time());
+    }
+
+    protected function registered(Request $request, $user)
+    {
+        $user->generateToken();
+
+        return response()->json([
+            'data' => $user->toArray(),
+        ], 201);
+
     }
 }
