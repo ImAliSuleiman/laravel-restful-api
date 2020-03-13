@@ -184,7 +184,7 @@ class UserController extends Controller
             ], 200);
     }
 
-    public function posts($uid = null)
+    public function userPosts($uid = null)
     {
         if ($uid == null) {
             if (!request()->has('uid'))
@@ -195,11 +195,71 @@ class UserController extends Controller
             $uid = request()->input('uid');
         }
 
-        $posts = BD::table('users')
-            ->join('posts', 'users.id', '=', 'posts.user_id')
-            ->select('users.id', 'users.name', 'users.email', 'posts.id as post_id',
-                'posts.body as post_body', 'posts.created_at', 'posts.updated_at')
+        $posts = DB::table('users')
+            ->join('posts', 'users.id', '=', 'posts.uid')
+            ->select(
+                'users.id as user_id', 'users.name', 'users.email',
+                'posts.id as post_id', 'posts.body as post_body',
+                'posts.created_at', 'posts.updated_at')
+            ->where(['users.id' => $uid])
             ->get();
+
+        if ($posts->count() > 0)
+            return response()->json([
+                'data' => $posts
+//                'data' => [
+//                    'user' => array('id' => $uid, 'email' => '', 'name' => ''),
+//                ]
+            ]);
+        else
+            return response()->json([
+                'message' => 'No user post found'
+            ]);
+    }
+
+    public function addPost()
+    {
+        if (!request()->hasHeader('Authorization'))
+            abort(401, 'Unauthorized action.');
+
+        // $token = request()->header('Authorization');
+        $token = request()->bearerToken();
+
+        Log::info('Requesting profile for token: ' . $token);
+
+        $user = DB::table('users')->where(['api_token' => $token])->first();
+
+        if ($user) {
+            $postAdded = DB::table('posts')->insert([
+                'uid' => $user->id,
+                'body' => request()->input('post'),
+            ]);
+
+            if ($postAdded)
+                return response()->json([
+                    'message' => 'Post added'
+                ]);
+        } else
+            return response()->json([
+                'message' => 'Invalid token'
+            ]);
+
+    }
+
+    public function delete($id)
+    {
+        // Article::findOrFail($id)->delete();
+        // $article = Article::findOrFail($id);
+        $count = DB::table('users')->delete($id);
+
+        if ($count)
+            return response()->json([
+                'message' => $count . ' user(s) deleted',
+            ], 204);
+        else
+            return response()->json([
+                'message' => 'No user deleted',
+            ], 204);
     }
 
 }
