@@ -41,15 +41,15 @@ class User extends Authenticatable
     public function generateToken()
     {
         // $this->api_token = str_random(60);
-        $this->api_token = $this->genToken();
+        $this->api_token = $this->genToken($this->id);
         $this->save();
 
         return $this->api_token;
     }
 
-    public function genToken()
+    public static function genToken($id)
     {
-        Log::info('Generating token for user: ' . $this->id);
+        Log::info('Generating token for user: ' . $id);
 //        $binary = openssl_random_pseudo_bytes(22);    // 22
 //        $hex = bin2hex($binary);    // 44
 //        $time = time();    // 10

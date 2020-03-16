@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
@@ -64,6 +65,10 @@ class Handler extends ExceptionHandler
         } else if ($exception instanceof MethodNotAllowedHttpException)
             return response()->json([
                 'message' => 'Method not allowed'
+            ]);
+        else if ($exception instanceof ValidationException)
+            return response()->json([
+                'message' => 'Data validation failed'
             ]);
 
         if ($exception instanceof AuthenticationException) {

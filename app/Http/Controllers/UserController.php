@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Cassandra\Exception\UnauthorizedException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -261,5 +262,72 @@ class UserController extends Controller
                 'message' => 'No user deleted',
             ], 204);
     }
+
+    public function registerAlt()
+    {
+        $validated = request()->validate([
+            'name' => 'required|string|max:50',
+            'email' => ['bail', 'required', 'string', 'email', 'max:30', 'unique:users'],
+            'password' => 'bail|required|string|min:8'
+        ]);
+
+        if ($validated) {
+            $encrypted_password = password_hash(request()->input('password'), PASSWORD_BCRYPT);
+            $isUserCreated = DB::table('users')->insert(array(
+                'name' => request()->input('name'),
+                'email' => request()->input('email'),
+                'password' => $encrypted_password,
+            ));
+
+            if ($isUserCreated)
+                return response()->json([
+                    'message' => 'User created'
+                ]);
+            else
+                return response()->json([
+                    'message' => 'An error has occurred'
+                ]);
+        }
+
+
+    }
+
+    public function loginAlt()
+    {
+        $validated = request()->validate([
+            'email' => ['bail', 'required', 'string', 'email', 'max:30'],
+            'password' => 'bail|required|string|min:8'
+        ]);
+
+        if ($validated) {
+            // $encrypted = password_hash(request()->input('password'), PASSWORD_BCRYPT);
+            $user = DB::table('users')->where([
+                'email' => request()->input('email'),
+            ])->first();
+
+            if ($user) {
+                $encryptedPassword = $user->password;
+                if (password_verify(request()->input('password'), $encryptedPassword)) {
+
+                    $token = User::genToken($user->id);
+                    $user->api_token = $token;
+                    $count = DB::table('users')->where(['id' => $user->id])->update(['api_token' => $token]);
+
+                    if ($count > 0)
+                        return response()->json([
+                            'data' => $user
+                        ]);
+                } else
+                    return response()->json([
+                        'message' => 'Wrong email or password'
+                    ]);
+            } else
+                return response()->json([
+                    'message' => 'Wrong email or password'
+                ]);
+        }
+
+    }
+
 
 }
